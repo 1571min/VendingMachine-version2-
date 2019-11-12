@@ -508,6 +508,34 @@ public class VendingStartPage extends JFrame{
 		return buttonCashOutput;
 	}
 
+	
+	
+	
+	public JButton getButtonAdmin() {
+		if(buttonAdmin==null) {
+			buttonAdmin=new JButton("관리자 페이지");
+			buttonAdmin.addMouseListener(new MouseAdapter() {
+				@Override
+				public void mousePressed(MouseEvent e) {
+					
+					super.mousePressed(e);
+					String password=JOptionPane.showInputDialog("비밀번호를 입력해주세요");
+					if(password.equals("1234")) {
+						//화면 전환 이벤트 처리
+						
+						
+					}
+					else {
+						JOptionPane.showMessageDialog(null, "잘못된 비밀번호입니다","경고",1);
+						
+						
+					}
+				}
+			});
+		}
+		return buttonAdmin;
+	}
+
 	public JLabel getLabelBalance() {
 		if(labelBalance==null) {
 			labelBalance=new JLabel("잔액");
