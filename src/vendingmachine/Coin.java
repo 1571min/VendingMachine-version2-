@@ -70,6 +70,17 @@ public class Coin {
 		this._1000won = _1000won;
 	}
 	
+	//동전 카운트 함수
+	public void countup10won() {_10won++;}
+	public void countdown10down() {_10won--;}
+	public void countup50won() {_50won++;}
+	public void countdown50down() {_50won--;}
+	public void countup100won() {_100won++;}
+	public void countdown100down() {_100won--;}
+	public void countup500won() {_500won++;}
+	public void countdown500down() {_500won--;}
+	public void countup1000won() {_1000won++;}
+	public void countdown1000down() {_100won--;}
 	
 	
 	
