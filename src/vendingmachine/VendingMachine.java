@@ -3,6 +3,8 @@ package vendingmachine;
 import java.util.GregorianCalendar;
 import java.util.Locale;
 
+import fileio.FileIO;
+
 public class VendingMachine {
 	private Beverage[] Beverage_list;
 	private Coin vending_coin;
@@ -11,6 +13,8 @@ public class VendingMachine {
 	private int[] MonthlySale;
 	private int[][][] DailySalesByDrink;
 	private int[][] MonthlySalesByDrink;
+	private int[] BeverageStuck;
+	private FileIO fileObject;
 	
 	public Coin getVending_coin() {
 		return vending_coin;
@@ -33,6 +37,8 @@ public class VendingMachine {
 	}
 	
 	public VendingMachine() {
+		fileObject=new FileIO();
+		
 		vending_coin = new Coin();
 		Beverage_list = new Beverage[] { 
 				new Beverage("물", 450, 3), 
@@ -42,9 +48,18 @@ public class VendingMachine {
 				new Beverage("탄산", 750, 3) 
 				};
 		DailySales = new int[13][32];
-		MonthlySale = new int[13];
 		DailySalesByDrink = new int[5][13][32];
-		MonthlySalesByDrink = new int[5][32];
+		MonthlySale = new int[13];
+		MonthlySalesByDrink = new int[5][13];
+		BeverageStuck=new int[5];
+		
+		fileObject.createFile("C:\\Astudy\\학교\\2학년 2학기\\JavaTerm\\VendingMacine(수정본)\\DailySales.txt");
+		fileObject.createFile("C:\\Astudy\\학교\\2학년 2학기\\JavaTerm\\VendingMacine(수정본)\\DailySalesByDrink.txt");
+		fileObject.createFile("C:\\Astudy\\학교\\2학년 2학기\\JavaTerm\\VendingMacine(수정본)\\MonthlySale.txt");
+		fileObject.createFile("C:\\Astudy\\학교\\2학년 2학기\\JavaTerm\\VendingMacine(수정본)\\MonthlySalesByDrink.txt");
+		fileObject.createFile("C:\\Astudy\\학교\\2학년 2학기\\JavaTerm\\VendingMacine(수정본)\\BeverageStuck.txt");
+		initInfo();
+		
 		today = new GregorianCalendar(Locale.KOREA);
 	}
 	
@@ -56,6 +71,16 @@ public class VendingMachine {
 			sum += Beverage_list[i].getCount();
 		}
 		return sum;
+	}
+
+	
+	
+	public int[] getBeverageStuck() {
+		return BeverageStuck;
+	}
+
+	public void setBeverageStuck(int[] beverageStuck) {
+		BeverageStuck = beverageStuck;
 	}
 
 	public Beverage[] getBeverage_list() {
@@ -76,10 +101,42 @@ public class VendingMachine {
 
 	
 	//음료를 구매햇을 때 발생할 함수
+	/*
+	 * private int[][] DailySales;
+	 * private int[] MonthlySale;
+	 * private int[][][] DailySalesByDrink;
+	 * private int[][] MonthlySalesByDrink;
+	 * private int[] BeverageStuck;
+	 * */
 	public void SaleBeverage(int beverage_number) {
 		Beverage_list[beverage_number].countdown();
 		DailySales[today.get(today.MONTH)][today.get(today.DAY_OF_MONTH)]++;
 		DailySalesByDrink[beverage_number][today.get(today.MONTH)][today.get(today.DAY_OF_MONTH)]++;
-
+		MonthlySale[today.get(today.MONTH)]++;
+		MonthlySalesByDrink[beverage_number][today.get(today.MONTH)]++;
+		BeverageStuck[beverage_number]++;
 	}
+	
+	public void initInfo() {
+		fileObject.initFile("DailySales.txt", this);
+		fileObject.initFile("DailySalesByDrink.txt", this);
+		fileObject.initFile("MonthlySalesByDrink.txt", this);
+		fileObject.initFile("MonthlySale.txt", this);
+		fileObject.initFile("BeverageStuck.txt", this);
+	}
+
+	
+//	 int getBeverageSales(int index) {
+//		int sum=0;
+//		
+//		for(int i=0;i<13;i++) {
+//			sum+=MonthlySalesByDrink[index][i];
+//		}
+//		 
+//		 return sum;
+//	}
+	 
+	 
+	
+	 
 }

@@ -20,17 +20,26 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.border.EmptyBorder;
 
+import fileio.FileIO;
 import vendingmachine.Beverage;
 import vendingmachine.Coin;
 import vendingmachine.Manager;
 
 public class VendingStartPage extends JFrame{
 	//자판기 화면 구성요소 필드
+	private FileIO fileIO;
+	private Main main;
 	
 	//자판기 메인 화면 판넬
 	private JPanel mainPanel;
 	private JPanel beveragePanel;
 	private JPanel coinPanel;
+	/*
+	 * todo 
+	 * 판넬 별로 클래스 만들어서 쪼개기
+	 * 메인 메소드로 쪼개서 만들기 
+	 * 컴포넌트를 가져오고 판넬을 붙여야한다
+	 * */
 	
 	//자판기 음료버튼
 	private JButton buttonWater;
@@ -132,6 +141,7 @@ public class VendingStartPage extends JFrame{
 	
 	public VendingStartPage() {
 		//프레임 초기화
+		fileIO=new FileIO();
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
 		setLocation(400,300);
 		setSize(1000, 500);
@@ -171,13 +181,17 @@ public class VendingStartPage extends JFrame{
 			
 			coinPanel.add(getLabelBalance());
 			coinPanel.add(getFieldCashInput());
+			
 			coinPanel.add(getButton10won());
 			coinPanel.add(getButton50won());
 			coinPanel.add(getButton100won());
 			coinPanel.add(getButton500won());
 			coinPanel.add(getButton1000won());
 			coinPanel.add(getButtonCashOutput());
+			coinPanel.add(getButtonAdmin());
+			
 			coinPanel.add(getLabelBeverageOut());
+			
 			
 		}
 		return coinPanel;
@@ -187,6 +201,12 @@ public class VendingStartPage extends JFrame{
 		return manager;
 	}
 
+	
+	/*
+	 * 음료 버튼,
+	 * 음료 반환 라벨
+	 * 각 음료버튼에 대한 이벤트 처리 함수
+	*/
 	public JButton getButtonWater() {
 		if(buttonWater==null) {
 			buttonWater=new JButton(Blist[0].getName()+
@@ -199,7 +219,6 @@ public class VendingStartPage extends JFrame{
 					super.mousePressed(e);
 					if(TotalUserMoney>=Blist[0].getPrice()){
 						manager.machine.SaleBeverage(0);    // 음료 판매기록 자판기 기록
-						
 						TotalUserMoney-=Blist[0].getPrice();                       //현재 입력 돈 업데이트
 						fieldCashInput.setText(Integer.toString(TotalUserMoney));  // 텍스트 필드 업데이트
 						labelBeverageOut.setIcon(button_water_image);
@@ -227,7 +246,6 @@ public class VendingStartPage extends JFrame{
 					super.mousePressed(e);
 					if(TotalUserMoney>=Blist[1].getPrice()){
 						manager.machine.SaleBeverage(1);    // 음료 판매기록 자판기 기록
-						
 						TotalUserMoney-=Blist[1].getPrice();                       //현재 입력 돈 업데이트
 						fieldCashInput.setText(Integer.toString(TotalUserMoney));  // 텍스트 필드 업데이트
 						labelBeverageOut.setIcon(button_coffee_image);
@@ -256,7 +274,6 @@ public class VendingStartPage extends JFrame{
 					super.mousePressed(e);
 					if(TotalUserMoney>=Blist[2].getPrice()){
 						manager.machine.SaleBeverage(2);    // 음료 판매기록 자판기 기록
-						
 						TotalUserMoney-=Blist[2].getPrice();                       //현재 입력 돈 업데이트
 						fieldCashInput.setText(Integer.toString(TotalUserMoney));  // 텍스트 필드 업데이트
 						labelBeverageOut.setIcon(button_ion_image);
@@ -284,7 +301,6 @@ public class VendingStartPage extends JFrame{
 					super.mousePressed(e);
 					if(TotalUserMoney>=Blist[3].getPrice()){
 						manager.machine.SaleBeverage(3);    // 음료 판매기록 자판기 기록
-						
 						TotalUserMoney-=Blist[3].getPrice();                       //현재 입력 돈 업데이트
 						fieldCashInput.setText(Integer.toString(TotalUserMoney));  // 텍스트 필드 업데이트
 						labelBeverageOut.setIcon(button_premium_coffee_image);
@@ -327,6 +343,21 @@ public class VendingStartPage extends JFrame{
 		return buttonCoke;
 	}
 
+	public JLabel getLabelBeverageOut() {
+		if(labelBeverageOut==null) {
+			labelBeverageOut=new JLabel("");
+		}
+		return labelBeverageOut;
+	}
+
+	
+	
+	/*
+	 * 동전 버튼,
+	 * 잔액 라벨, 
+	 * 동전 잔액 표시 필드
+	 * 각 동전 버튼에 대한 이벤트 처리 함수
+	*/
 	public JButton getButton10won() {
 		if(button10won==null) {
 			button10won=new JButton(button_10_image);
@@ -464,6 +495,26 @@ public class VendingStartPage extends JFrame{
 		return button1000won;
 	}
 	
+	public JLabel getLabelBalance() {
+		if(labelBalance==null) {
+			labelBalance=new JLabel("잔액");
+			labelBalance.setSize(new Dimension(75,25));
+		}
+		return labelBalance;
+	}
+	
+	public JTextField getFieldCashInput() {
+		if(fieldCashInput==null) {
+			fieldCashInput=new JTextField(25);
+		}
+		return fieldCashInput;
+	}
+
+	
+	/*
+	 * 동전반환, 관리자 메뉴 전환 함수
+	 * 각 음료버튼에 대한 이벤트 처리 함수
+	*/
 	public JButton getButtonCashOutput() {
 		if(buttonCashOutput==null) {
 			buttonCashOutput=new JButton("반환");
@@ -473,7 +524,7 @@ public class VendingStartPage extends JFrame{
 				@Override
 				public void mousePressed(MouseEvent e) {
 					// TODO Auto-generated method stub
-					if(ischangeok(TotalUserMoney, manager,countarr)==true) {
+					if(ischangeok(TotalUserMoney, MachineCoin,countarr)==true) {
 						
 						super.mousePressed(e);
 						JOptionPane.showMessageDialog(null, Integer.toString(TotalUserMoney)+"원("+"1000원 : "+countarr[0]+"개"+
@@ -490,6 +541,7 @@ public class VendingStartPage extends JFrame{
 						MachineCoin.set_50won(MachineCoin.get_50won()-countarr[3]);
 						MachineCoin.set_10won(MachineCoin.get_10won()-countarr[4]);
 						
+						manager.machine.initInfo();
 						
 						for(int i=0;i<5;i++)
 							countarr[i]=0;
@@ -507,9 +559,6 @@ public class VendingStartPage extends JFrame{
 		}
 		return buttonCashOutput;
 	}
-
-	
-	
 	
 	public JButton getButtonAdmin() {
 		if(buttonAdmin==null) {
@@ -536,28 +585,13 @@ public class VendingStartPage extends JFrame{
 		return buttonAdmin;
 	}
 
-	public JLabel getLabelBalance() {
-		if(labelBalance==null) {
-			labelBalance=new JLabel("잔액");
-			labelBalance.setSize(new Dimension(75,25));
-		}
-		return labelBalance;
-	}
-
-	public JLabel getLabelBeverageOut() {
-		if(labelBeverageOut==null) {
-			labelBeverageOut=new JLabel("음료가 나오는 곳 입니다");
-		}
-		return labelBeverageOut;
-	}
-
-	public JTextField getFieldCashInput() {
-		if(fieldCashInput==null) {
-			fieldCashInput=new JTextField(25);
-		}
-		return fieldCashInput;
-	}
-
+	/*
+	 * 분류      : 함수
+	 * 반환형    : void
+	 * 매게 변수 : money(사용자가 입력한 돈),음료 리스트
+	 * 기능      : 음료수가 현재 구매가능한 상태인지 체크
+	 *             구매가능 -> 컬러, 구매 불가능 -> 흑백
+	 * */
 	public void cheakbeverage(int money,Beverage[] blist) {
 		//water
 		if(blist[0].getCount()>0) {
@@ -624,10 +658,18 @@ public class VendingStartPage extends JFrame{
 		
 	}
 	
-	public boolean ischangeok(int changemoney,Manager m,int[] countarr) {
+	
+	/*
+	 * 분류      : 함수
+	 * 반환형    : boolean
+	 * 매게 변수 : changemoney(사용자가 입력한 돈),temp_coin(현재 자판기 돈),countarr(얼마를 거슬러 줄지 기록할 배열)
+	 * 기능      : 자판기가 거스름돈을 거슬러 줄 수 있는 지 체크
+	 * */
+	
+	public boolean ischangeok(int changemoney,Coin temp_coin,int[] countarr) {
 		int count=0;
 	
-		Coin temp_coin=m.machine.getCoin();
+		//Coin temp_coin=m.machine.getCoin();
 		if(changemoney>=1000) {
 			count=changemoney/1000;
 			if(temp_coin.get_1000won()>=count) {
@@ -678,5 +720,10 @@ public class VendingStartPage extends JFrame{
 		else return false;
 	}
 
+	
+	public void setMain(Main main) {
+		// TODO Auto-generated method stub
+		this.main=main;
+	}
 	
 }
