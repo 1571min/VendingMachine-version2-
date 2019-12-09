@@ -7,199 +7,146 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.GregorianCalendar;
 import java.util.StringTokenizer;
-
 import vendingmachine.VendingMachine;
 
 
 public class FileIO {
+	
+	public enum Month { 
+		JANUARY, //1월 
+		FEBRUARY, //2월 
+		MARCH, //3월 
+		APRIL, //4월 
+		MAY, //5월 
+		JUNE, //6월 
+		JULY, //7월
+		AUGUST, //8월 
+		SEPTEMBER, //9월 
+		OCTOBER, //10월 
+		NOVEMBER, //11월 
+		DECEMBER //12월 
+		
+	}
+	
 	static String StringForSave = "";
-
+	private GregorianCalendar today;
+	
+	
 	public FileIO() { // 생성자
 
 	}
-
-	public static void SetFileVendingInfo(String sfilename) { // 파일 이름을 받아 그 해당하는 리스트
-		BufferedReader read = null;
+	
+	
+	/*
+	 * 분류      : 함수
+	 * 반환형    : void
+	 * 매게 변수 : VendingMachine
+	 * 기능      : 자판기를 매개변수로 받아 자판기의 정보를 저장한다
+	 * */
+	public static void saveToFile(VendingMachine machine) {
 		
-		
+		BufferedWriter writer = null;
 		try {
-			read = new BufferedReader(new FileReader(sfilename));
-			//파일 저장해야됨
-			// 월별,일별 텍스트 파일 저장해야됨
-			// 각 음료별 월별,일별 텍스트파일 저장
-			//
+				//자판기 데일리 세일즈 정보 필요
+				int data[][][]=machine.getDailySalesByDrink();
+				for (Month temp: Month.values()) {
+					writer = new BufferedWriter(new FileWriter(temp.name()+".txt"));
+					writer.write(StringForSave);
+					StringForSave = ""; // 초기화
+					for(int i=0;i<31;i++) {
+						for(int j=0;j<5;j++) {
+							writer.write(Integer.toString(data[temp.ordinal()][i][j])+",");
+						}
+						writer.write("\n");
+					}
+					writer.close();
+				}
+				
 			
-		} catch (FileNotFoundException e) {
+		} catch (IOException e) {
 			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} finally {
+			try {
+				writer.close();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+	}
+
+	
+	/*
+	 * 분류      : 함수
+	 * 반환형    : void
+	 * 매게 변수 : x
+	 * 기능      : 자판기 생성 초기에 파일을 생성해 주는 함수이다
+	 *             이미 존재하는 파일이라면 생성하지 않는다
+	 * */
+	public void createFile() {
+		
+        //absolute file name with path
+      for(Month temp:Month.values()) {
+    	  
+        File file = new File("C:\\\\Astudy\\\\학교\\\\2학년 2학기\\\\JavaTerm\\\\VendingMacine(수정본)\\\\"+temp.name()+".txt");
+        try {
+			if(file.createNewFile()){
+			    System.out.println(file.getName()+" 파일이 생성되었습니다");
+			}else System.out.println("File "+file.getName()+" 이미 존재하는 파일 입니다.");
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+        
+      }
+}
+
+
+	/*
+	 * 분류      : 함수
+	 * 반환형    : void
+	 * 매게 변수 : VendingMachine
+	 * 기능      : 자판기 객체를 받아서 그 객체에 데이터를 저장한다
+	 * */
+	public void readFile(VendingMachine machine) {
+		BufferedReader read = null;
+		String s = null;
+		int[][][] _dailySalesByDrink=new int[13][32][5];
+		try {
+			for (Month temp: Month.values()) {
+				read = new BufferedReader(new FileReader(temp.name()+".txt"));
+				try {
+					int daily=0;
+					while ((s = read.readLine()) != null) {
+						StringTokenizer row = new StringTokenizer(s, ",");
+						int i=0;
+						while (row.hasMoreTokens()) {// 리턴할 다음 토큰이 있는지 여부 확인
+							if(i<5&&daily<32) {
+								_dailySalesByDrink[temp.ordinal()][daily][i++] = Integer.parseInt(row.nextToken()); // 배열에 각 값을 담기
+							}
+						}
+						daily++;
+					}
+					machine.setDailySalesByDrink(_dailySalesByDrink);
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+				
+			}
+		} catch (
+
+		FileNotFoundException e) {
 			e.printStackTrace();
 		} finally {
 			try {
 				read.close();
 			} catch (IOException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}
-	}
-
-	public static void SaveToFile(String sfilename) {
-		
-		BufferedWriter writer = null;
-		try {
-			writer = new BufferedWriter(new FileWriter(sfilename));
-			writer.write(StringForSave);
-			StringForSave = ""; // 초기화
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} finally {
-			try {
-				writer.close();
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		}
-	}
-	
-	public static void initFile(String sfilename,VendingMachine machine) {
-		
-		BufferedWriter writer = null;
-		try {
-			writer = new BufferedWriter(new FileWriter(sfilename));
-			
-			
-			writer.write(StringForSave);
-			StringForSave = ""; // 초기화
-			
-			
-			if (sfilename.equals("DailySales.txt")) {
-				//자판기 데일리 세일즈 정보 필요
-				int data[][]=machine.getDailySales();
-				
-			
-				for(int i=0;i<13;i++) {
-					writer.write(Integer.toString(i+1)+"\n");
-					for(int j=0;j<31;j++) {
-						writer.write(Integer.toString(data[i][j])+" ");
-					}
-					writer.write("\n");
-				}
-				
-			} 
-			else if (sfilename.equals("MonthlySale.txt")) {
-				int data[]=machine.getMonthlySale();
-				
-				
-				for(int i=0;i<13;i++) {	
-					writer.write(Integer.toString(data[i])+" ");
-					writer.write("\n");
-				}
-			}
-			else if (sfilename.equals("DailySalesByDrink.txt")) {
-				int data[][][]=machine.getDailySalesByDrink();
-				
-				
-				for(int i=0;i<5;i++) {
-					writer.write(Integer.toString(i+1)+"\n");
-					for(int j=0;j<13;j++) {
-						for(int k=0;k<31;k++) {
-							writer.write(Integer.toString(data[i][j][k])+" ");
-						}
-						writer.write("\n");
-					}
-					writer.write("\n");
-				}
-			}
-			else if (sfilename.equals("MonthlySalesByDrink.txt")) {
-				int data[][]=machine.getMonthlySalesByDrink();
-				
-				
-				for(int i=0;i<5;i++) {
-					writer.write(Integer.toString(i+1)+"\n");
-					for(int j=0;j<13;j++) {
-						writer.write(Integer.toString(data[i][j])+" ");
-					}
-					writer.write("\n");
-				}
-			}
-			else if (sfilename.equals("BeverageStuck.txt")) {
-				int data[]=machine.getBeverageStuck();
-				
-				
-				for(int i=0;i<5;i++) {	
-					writer.write(Integer.toString(data[i])+" ");
-					writer.write("\n");
-				}	
-			}
-
-			
-			
-			
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} finally {
-			try {
-				writer.close();
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		}
-	}
-
-	
-	public void createFile(String sfilename) {
-		
-	        //absolute file name with path
-	      
-	        File file = new File(sfilename);
-	        try {
-				if(file.createNewFile()){
-				    System.out.println(file.getName()+" 파일이 생성되었습니다");
-				}else System.out.println("File "+file.getName()+" 이미 존재하는 파일 입니다.");
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-	        
-	        
-	}
-	
-	
-	public void saveFile(String sfilename,VendingMachine machine) {
-		/*
-		 * 텍스트 파일 목록
-		 * DailySales 
-		 * MonthlySale 
-		 * DailySalesByDrink 
-		 * MonthlySalesByDrink
-		 * BeverageStuck
-		 *
-		 * 
-		 */
-		if (sfilename.equals("DailySales.txt")) {
-
-		} 
-		else if (sfilename.equals("MonthlySale.txt")) {
-			
-		}
-		else if (sfilename.equals("DailySalesByDrink.txt")) {
-			
-		}
-		else if (sfilename.equals("MonthlySalesByDrink.txt")) {
-		
-		}
-		else if (sfilename.equals("BeverageStuck.txt")) {
-		
-		}
-		
-	}
-	
-	public void readFile(String sfilename) {
-		
 	}
 
 }

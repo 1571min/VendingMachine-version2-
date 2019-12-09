@@ -36,6 +36,10 @@ public class VendingMachine {
 		return MonthlySalesByDrink;
 	}
 	
+	public void setDailySalesByDrink(int[][][] dailySalesByDrink) {
+		DailySalesByDrink = dailySalesByDrink;
+	}                           
+
 	public VendingMachine() {
 		fileObject=new FileIO();
 		
@@ -48,18 +52,14 @@ public class VendingMachine {
 				new Beverage("탄산", 750, 3) 
 				};
 		DailySales = new int[13][32];
-		DailySalesByDrink = new int[5][13][32];
+		DailySalesByDrink = new int[13][32][5];
 		MonthlySale = new int[13];
 		MonthlySalesByDrink = new int[5][13];
 		BeverageStuck=new int[5];
 		
-		fileObject.createFile("C:\\Astudy\\학교\\2학년 2학기\\JavaTerm\\VendingMacine(수정본)\\DailySales.txt");
-		fileObject.createFile("C:\\Astudy\\학교\\2학년 2학기\\JavaTerm\\VendingMacine(수정본)\\DailySalesByDrink.txt");
-		fileObject.createFile("C:\\Astudy\\학교\\2학년 2학기\\JavaTerm\\VendingMacine(수정본)\\MonthlySale.txt");
-		fileObject.createFile("C:\\Astudy\\학교\\2학년 2학기\\JavaTerm\\VendingMacine(수정본)\\MonthlySalesByDrink.txt");
-		fileObject.createFile("C:\\Astudy\\학교\\2학년 2학기\\JavaTerm\\VendingMacine(수정본)\\BeverageStuck.txt");
-		initInfo();
-		
+		fileObject.createFile();
+		fileObject.saveToFile(this);
+
 		today = new GregorianCalendar(Locale.KOREA);
 	}
 	
@@ -116,13 +116,8 @@ public class VendingMachine {
 		MonthlySalesByDrink[beverage_number][today.get(today.MONTH)]++;
 		BeverageStuck[beverage_number]++;
 	}
-	
 	public void initInfo() {
-		fileObject.initFile("DailySales.txt", this);
-		fileObject.initFile("DailySalesByDrink.txt", this);
-		fileObject.initFile("MonthlySalesByDrink.txt", this);
-		fileObject.initFile("MonthlySale.txt", this);
-		fileObject.initFile("BeverageStuck.txt", this);
+		fileObject.saveToFile(this);
 	}
 
 	

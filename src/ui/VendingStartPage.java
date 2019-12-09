@@ -122,22 +122,7 @@ public class VendingStartPage extends JFrame{
 		}
 	}
 	
-	public static void main(String[] args) {
-		// TODO Auto-generated method stub
-			EventQueue.invokeLater(new Runnable() {
-			
-			@Override
-			public void run() {
-				// TODO Auto-generated method stub
-				try {
-					VendingStartPage startpage=new VendingStartPage();
-					startpage.setVisible(true);
-				}catch(Exception e) {
-					e.printStackTrace();
-				}
-			}
-		});
-	}
+	
 	
 	public VendingStartPage() {
 		//프레임 초기화
@@ -353,10 +338,9 @@ public class VendingStartPage extends JFrame{
 	
 	
 	/*
-	 * 동전 버튼,
-	 * 잔액 라벨, 
-	 * 동전 잔액 표시 필드
-	 * 각 동전 버튼에 대한 이벤트 처리 함수
+	 * 분류   : 동전 버튼 getter함수
+	 * 반환형 : JButton
+	 * 기능   : 각 동전 버튼에 대한 메모리 할당 이벤트 처리 정의
 	*/
 	public JButton getButton10won() {
 		if(button10won==null) {
@@ -510,11 +494,6 @@ public class VendingStartPage extends JFrame{
 		return fieldCashInput;
 	}
 
-	
-	/*
-	 * 동전반환, 관리자 메뉴 전환 함수
-	 * 각 음료버튼에 대한 이벤트 처리 함수
-	*/
 	public JButton getButtonCashOutput() {
 		if(buttonCashOutput==null) {
 			buttonCashOutput=new JButton("반환");
@@ -571,7 +550,8 @@ public class VendingStartPage extends JFrame{
 					String password=JOptionPane.showInputDialog("비밀번호를 입력해주세요");
 					if(password.equals("1234")) {
 						//화면 전환 이벤트 처리
-						
+						main.showLoginFrame();
+						fileIO.saveToFile(manager.machine);
 						
 					}
 					else {
