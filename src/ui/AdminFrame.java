@@ -5,23 +5,29 @@ import java.awt.Dimension;
 import java.awt.EventQueue;
 import java.awt.FlowLayout;
 import java.awt.GridLayout;
+import java.util.Arrays;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTable;
 import javax.swing.border.EmptyBorder;
+import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableModel;
 
 import fileio.FileIO;
 import vendingmachine.Manager;
 
-public class AdminPage extends JFrame{
-	private Main main;
+public class AdminFrame extends JFrame{
+	private VmMain main;
 	
 	private JPanel mainPanel;
 	private JPanel chartPanel;
 	private JPanel menuPanel;
+	private JPanel SalesRatePanel;
 	
-	private JButton DayButton;
+	private JButton SalesRateButton;
 	private JButton BeverageButton;
 	private JButton CollectButton;
 	private JButton StockButton;
@@ -29,11 +35,11 @@ public class AdminPage extends JFrame{
 	private JButton PWChangeButton;
 	private JButton ReturnButton;
 	
-	private Manager manager;
+	private Manager manager2;
 	private FileIO fileIO;
+
 	
-	
-	public AdminPage() {
+	public AdminFrame() {
 		/*
 		 * 파일에서 데이터 읽어옴( 파일객체 필요(읽기 함수 필요)))
 		 * manager에 대입
@@ -42,28 +48,54 @@ public class AdminPage extends JFrame{
 		
 		//프레임 초기화
 		mainPanel=new JPanel();
-		mainPanel.setLayout(new FlowLayout());
+		mainPanel.setLayout(new BorderLayout());
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
 		setLocation(400,300);
-		setSize(1000, 500);
+		setSize(700, 400);
 		setTitle("자판기 프로그램");
-		mainPanel.add(getMenuPanel());
-		mainPanel.add(getChartPanel());
-		setContentPane(mainPanel);
 		fileIO=new FileIO();
-		manager=new Manager();
+		manager2=new Manager();
+		fileIO.readFile(manager2.machine);
+		
+		mainPanel.add(getMenuPanel(),BorderLayout.EAST);
+		mainPanel.add(getChartPanel(),BorderLayout.CENTER);
+		setContentPane(mainPanel);
+		
 		setVisible(true);
 		
 				
 	}
-	
-	
 
 	public JPanel getChartPanel() {
 		if(chartPanel==null) {
 			chartPanel=new JPanel();
 			chartPanel.setBorder(new EmptyBorder(5,5,5,5));
 			chartPanel.setPreferredSize(new Dimension(500,500));
+			
+			int[][][] test=manager2.machine.getDailySalesByDrink();
+			Integer[][][] boxedArray = new Integer[13][32][5];
+			String []a = {
+					"물"
+					,"커피"
+					,"이온"
+					,"고급커피"
+					,"콜라"
+			};
+			
+			for (int i = 0; i < 13; i++) {
+				for (int j = 0; j < 32; j++) {
+					for (int j2 = 0; j2 <5; j2++) {
+						boxedArray[i][j][j2] = Integer.valueOf(test[i][j][j2]);
+					}
+				}
+			}
+			
+			
+			JTable jTable=new JTable(boxedArray[11],a);
+			JScrollPane jScrollPane=new JScrollPane(jTable);
+			jScrollPane.setPreferredSize(new Dimension(300,300));
+			chartPanel.add(jScrollPane);
+			chartPanel.setSize(500, 500);
 		}
 		return chartPanel;
 	}
@@ -85,16 +117,11 @@ public class AdminPage extends JFrame{
 		return menuPanel;
 	}
 
-
-
-
 	public JButton getDayButton() {
 		
-		DayButton=new JButton("월별 매출량");
-		return DayButton;
+		SalesRateButton=new JButton("월별 매출량");
+		return SalesRateButton;
 	}
-
-
 
 
 	public JButton getBeverageButton() {
@@ -103,14 +130,10 @@ public class AdminPage extends JFrame{
 	}
 
 
-
-
 	public JButton getCollectButton() {
 		CollectButton =new JButton("수금");
 		return CollectButton;
 	}
-
-
 
 
 	public JButton getStockButton() {
@@ -119,22 +142,16 @@ public class AdminPage extends JFrame{
 	}
 
 
-
-
 	public JButton getCoinButton() {
 		CoinButton=new JButton("화폐");
 		return CoinButton;
 	}
 
 
-
-
 	public JButton getPWChangeButton() {
 		PWChangeButton=new JButton("비밀번호 변경");
 		return PWChangeButton;
 	}
-
-
 
 
 	public JButton getReturnButton() {
@@ -144,10 +161,10 @@ public class AdminPage extends JFrame{
 
 
 	public void readadmin() {
-		fileIO.readFile(manager.machine);
+		fileIO.readFile(manager2.machine);
 	}
 
-	public void setMain(Main main) {
+	public void setMain(VmMain main) {
 		// TODO Auto-generated method stub
 		this.main=main;
 	}

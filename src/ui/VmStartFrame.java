@@ -1,6 +1,7 @@
 package ui;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.EventQueue;
 import java.awt.FlowLayout;
@@ -11,6 +12,7 @@ import java.awt.event.MouseListener;
 import java.io.IOException;
 
 import javax.imageio.ImageIO;
+import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -25,10 +27,10 @@ import vendingmachine.Beverage;
 import vendingmachine.Coin;
 import vendingmachine.Manager;
 
-public class VendingStartPage extends JFrame{
+public class VmStartFrame extends JFrame{
 	//자판기 화면 구성요소 필드
 	private FileIO fileIO;
-	private Main main;
+	private VmMain main;
 	
 	//자판기 메인 화면 판넬
 	private JPanel mainPanel;
@@ -61,15 +63,16 @@ public class VendingStartPage extends JFrame{
 	private JLabel labelBeverageOut;    //음료 출력 화면
 	private JTextField fieldCashInput;  //잔액 표시창
 	private JButton buttonAdmin;        //관리자 페이지 전환 버튼
+	private JLabel vendingSign;
 	
 	//기타 자판기 객체
-	private Manager manager;            //자판기 매니저 객체
-	private Coin MachineCoin;			//자판기 코인 객체
-	private Beverage[] Blist;			//자판기 음료 객체
-	private int TotalUserMoney=0;		//사용자가 입력한 코인 합
-	private static int LIMITE_SUM=5000; //자판기 입력 상한선
-	private int $1000count=0;			//천원 개수
-	private static int LIMITE_COUNT=3;  //천원 개수 상한선
+	static Manager manager;            //자판기 매니저 객체
+	static Coin MachineCoin;			//자판기 코인 객체
+	static Beverage[] Blist;			//자판기 음료 객체
+	static int TotalUserMoney=0;		//사용자가 입력한 코인 합
+	static int LIMITE_SUM=5000; //자판기 입력 상한선
+	static int $1000count=0;			//천원 개수
+	static int LIMITE_COUNT=3;  //천원 개수 상한선
 	
 	
 	
@@ -96,27 +99,48 @@ public class VendingStartPage extends JFrame{
 	public static ImageIcon button_500_image;
 	public static ImageIcon button_1000_image;
 	
+	
+	//동전 이미지
+	public static ImageIcon return_Image;
+	public static ImageIcon return_water_Image;
+	public static ImageIcon return_Ion_Image;
+	public static ImageIcon return_coke_Image;
+	public static ImageIcon return_coffee_Image;
+	public static ImageIcon retton_premiumCoffee_image;
+	
+	
+	public static ImageIcon vendingImage;
+	
 	///이미지 객체 할당
 	static {
 		try {
-			button_water_image=new ImageIcon(ImageIO.read(VendingStartPage.class.getResource("../image/water.png")));
-			button_coffee_image=new ImageIcon(ImageIO.read(VendingStartPage.class.getResource("../image/coffee.png")));
-			button_ion_image=new ImageIcon(ImageIO.read(VendingStartPage.class.getResource("../image/ion.png")));
-			button_premium_coffee_image=new ImageIcon(ImageIO.read(VendingStartPage.class.getResource("../image/premium_coffee.png")));
-			button_coke_image=new ImageIcon(ImageIO.read(VendingStartPage.class.getResource("../image/coke.png")));
+			button_water_image=new ImageIcon(ImageIO.read(VmStartFrame.class.getResource("../image/water.png")));
+			button_coffee_image=new ImageIcon(ImageIO.read(VmStartFrame.class.getResource("../image/coffee.png")));
+			button_ion_image=new ImageIcon(ImageIO.read(VmStartFrame.class.getResource("../image/ion.png")));
+			button_premium_coffee_image=new ImageIcon(ImageIO.read(VmStartFrame.class.getResource("../image/premium_coffee.png")));
+			button_coke_image=new ImageIcon(ImageIO.read(VmStartFrame.class.getResource("../image/coke.png")));
 			
-			no_button_water_image=new ImageIcon(ImageIO.read(VendingStartPage.class.getResource("../image/no_water.png")));
-			no_button_coffee_image=new ImageIcon(ImageIO.read(VendingStartPage.class.getResource("../image/no_coffee.png")));
-			no_button_ion_image=new ImageIcon(ImageIO.read(VendingStartPage.class.getResource("../image/no_ion.png")));
-			no_button_premium_coffee_image=new ImageIcon(ImageIO.read(VendingStartPage.class.getResource("../image/no_premium_coffee.png")));
-			no_button_coke_image=new ImageIcon(ImageIO.read(VendingStartPage.class.getResource("../image/no_coke.png")));
+			no_button_water_image=new ImageIcon(ImageIO.read(VmStartFrame.class.getResource("../image/no_water.png")));
+			no_button_coffee_image=new ImageIcon(ImageIO.read(VmStartFrame.class.getResource("../image/no_coffee.png")));
+			no_button_ion_image=new ImageIcon(ImageIO.read(VmStartFrame.class.getResource("../image/no_ion.png")));
+			no_button_premium_coffee_image=new ImageIcon(ImageIO.read(VmStartFrame.class.getResource("../image/no_premium_coffee.png")));
+			no_button_coke_image=new ImageIcon(ImageIO.read(VmStartFrame.class.getResource("../image/no_coke.png")));
 			
 			
-			button_10_image=new ImageIcon(ImageIO.read(VendingStartPage.class.getResource("../image/10won.png")));
-			button_50_image=new ImageIcon(ImageIO.read(VendingStartPage.class.getResource("../image/50won.png")));
-			button_100_image=new ImageIcon(ImageIO.read(VendingStartPage.class.getResource("../image/100won.png")));
-			button_500_image=new ImageIcon(ImageIO.read(VendingStartPage.class.getResource("../image/500won.png")));
-			button_1000_image=new ImageIcon(ImageIO.read(VendingStartPage.class.getResource("../image/1000won.png")));
+			button_10_image=new ImageIcon(ImageIO.read(VmStartFrame.class.getResource("../image/10won.png")));
+			button_50_image=new ImageIcon(ImageIO.read(VmStartFrame.class.getResource("../image/50won.png")));
+			button_100_image=new ImageIcon(ImageIO.read(VmStartFrame.class.getResource("../image/100won.png")));
+			button_500_image=new ImageIcon(ImageIO.read(VmStartFrame.class.getResource("../image/500won.png")));
+			button_1000_image=new ImageIcon(ImageIO.read(VmStartFrame.class.getResource("../image/1000won.png")));
+			
+			return_Image=new ImageIcon(ImageIO.read(VmStartFrame.class.getResource("../image/return.png")));
+			return_water_Image=new ImageIcon(ImageIO.read(VmStartFrame.class.getResource("../image/returnWater.png")));
+			return_coke_Image=new ImageIcon(ImageIO.read(VmStartFrame.class.getResource("../image/returnCoke.png")));
+			return_coffee_Image=new ImageIcon(ImageIO.read(VmStartFrame.class.getResource("../image/returnCoffee.png")));
+			retton_premiumCoffee_image=new ImageIcon(ImageIO.read(VmStartFrame.class.getResource("../image/returnPremiumCoffee.png")));
+			return_Ion_Image=new ImageIcon(ImageIO.read(VmStartFrame.class.getResource("../image/returnIon.png")));
+			
+			vendingImage=new ImageIcon(ImageIO.read(VmStartFrame.class.getResource("../image/vendingimage.png")));
 		} catch (IOException e2) {
 			e2.printStackTrace();
 		}
@@ -124,12 +148,12 @@ public class VendingStartPage extends JFrame{
 	
 	
 	
-	public VendingStartPage() {
+	public VmStartFrame() {
 		//프레임 초기화
 		fileIO=new FileIO();
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
-		setLocation(400,300);
-		setSize(1000, 500);
+		setLocation(200,150);
+		setSize(800, 600);
 		setTitle("자판기 프로그램");
 		mainPanel=new JPanel();
 		mainPanel.setLayout(new BorderLayout());
@@ -137,6 +161,10 @@ public class VendingStartPage extends JFrame{
 		Blist=manager.machine.getBeverage_list();
 		MachineCoin=manager.machine.getCoin();
 		//beveragepanel, coinpanel 추가
+		vendingSign=new JLabel(vendingImage);
+		
+		vendingSign.setSize(200, 200);
+		mainPanel.add(vendingSign,BorderLayout.NORTH);
 		mainPanel.add(getBeveragePanel(), BorderLayout.CENTER);
 		mainPanel.add(getCoinPanel(), BorderLayout.EAST);
 		setContentPane(mainPanel);
@@ -146,7 +174,7 @@ public class VendingStartPage extends JFrame{
 	public JPanel getBeveragePanel() {
 		if(beveragePanel==null) {
 			beveragePanel=new JPanel();
-			beveragePanel.setBorder(new EmptyBorder(5, 5, 5, 5));
+			beveragePanel.setBorder(new EmptyBorder(5,30,10,30));
 			beveragePanel.setLayout(new GridLayout(3,2));
 			
 			beveragePanel.add(getButtonWater());
@@ -154,12 +182,14 @@ public class VendingStartPage extends JFrame{
 			beveragePanel.add(getButtonIon());
 			beveragePanel.add(getButtonPremiumCoffee());
 			beveragePanel.add(getButtonCoke());
+			beveragePanel.setBackground(new Color(29, 161, 31));
 		}
 		return beveragePanel;
 	}
 
 	public JPanel getCoinPanel() {
 		if(coinPanel==null) {
+			
 			coinPanel=new JPanel();
 			coinPanel.setPreferredSize(new Dimension(300,500));
 			coinPanel.setLayout(new FlowLayout(FlowLayout.CENTER));
@@ -174,7 +204,7 @@ public class VendingStartPage extends JFrame{
 			coinPanel.add(getButton1000won());
 			coinPanel.add(getButtonCashOutput());
 			coinPanel.add(getButtonAdmin());
-			
+			coinPanel.setBackground(new Color(29, 161, 31));
 			coinPanel.add(getLabelBeverageOut());
 			
 			
@@ -194,8 +224,11 @@ public class VendingStartPage extends JFrame{
 	*/
 	public JButton getButtonWater() {
 		if(buttonWater==null) {
+			
 			buttonWater=new JButton(Blist[0].getName()+
 					Blist[0].getPrice()+"원",no_button_water_image);
+			buttonWater.setBackground(new Color(255, 251, 18));
+			buttonWater.setPreferredSize(new Dimension(200,100));
 			buttonWater.addMouseListener(new MouseAdapter() {
 					
 				@Override
@@ -206,7 +239,7 @@ public class VendingStartPage extends JFrame{
 						manager.machine.SaleBeverage(0);    // 음료 판매기록 자판기 기록
 						TotalUserMoney-=Blist[0].getPrice();                       //현재 입력 돈 업데이트
 						fieldCashInput.setText(Integer.toString(TotalUserMoney));  // 텍스트 필드 업데이트
-						labelBeverageOut.setIcon(button_water_image);
+						labelBeverageOut.setIcon(return_water_Image);
 					}
 					else{
 						JOptionPane.showMessageDialog(null,"잔액이 부족합니다","자판기 경고",JOptionPane.WARNING_MESSAGE);
@@ -221,8 +254,10 @@ public class VendingStartPage extends JFrame{
 
 	public JButton getButtonCoffee() {
 		if(buttonCoffee==null) {
+			
 			buttonCoffee=new JButton(Blist[1].getName()+
 					Blist[1].getPrice()+"원",no_button_coffee_image);
+			buttonCoffee.setBackground(new Color(255, 251, 18));
 			buttonCoffee.addMouseListener(new MouseAdapter() {
 					
 				@Override
@@ -233,7 +268,7 @@ public class VendingStartPage extends JFrame{
 						manager.machine.SaleBeverage(1);    // 음료 판매기록 자판기 기록
 						TotalUserMoney-=Blist[1].getPrice();                       //현재 입력 돈 업데이트
 						fieldCashInput.setText(Integer.toString(TotalUserMoney));  // 텍스트 필드 업데이트
-						labelBeverageOut.setIcon(button_coffee_image);
+						labelBeverageOut.setIcon(return_coffee_Image);
 					}
 					else{
 						JOptionPane.showMessageDialog(null,"잔액이 부족합니다","자판기 경고",JOptionPane.WARNING_MESSAGE);
@@ -249,8 +284,10 @@ public class VendingStartPage extends JFrame{
 
 	public JButton getButtonIon() {
 		if(buttonIon==null) {
+			
 			buttonIon=new JButton(Blist[2].getName()+
 					Blist[2].getPrice()+"원",no_button_ion_image);
+			buttonIon.setBackground(new Color(255, 251, 18));
 			buttonIon.addMouseListener(new MouseAdapter() {
 					
 				@Override
@@ -261,7 +298,7 @@ public class VendingStartPage extends JFrame{
 						manager.machine.SaleBeverage(2);    // 음료 판매기록 자판기 기록
 						TotalUserMoney-=Blist[2].getPrice();                       //현재 입력 돈 업데이트
 						fieldCashInput.setText(Integer.toString(TotalUserMoney));  // 텍스트 필드 업데이트
-						labelBeverageOut.setIcon(button_ion_image);
+						labelBeverageOut.setIcon(return_Ion_Image);
 					}
 					else{
 						JOptionPane.showMessageDialog(null,"잔액이 부족합니다","자판기 경고",JOptionPane.WARNING_MESSAGE);
@@ -276,8 +313,10 @@ public class VendingStartPage extends JFrame{
 
 	public JButton getButtonPremiumCoffee() {
 		if(buttonPremiumCoffee==null) {
+			
 			buttonPremiumCoffee=new JButton(Blist[3].getName()+
 					Blist[3].getPrice()+"원",no_button_premium_coffee_image);
+			buttonPremiumCoffee.setBackground(new Color(255, 251, 18));
 			buttonPremiumCoffee.addMouseListener(new MouseAdapter() {
 					
 				@Override
@@ -288,7 +327,7 @@ public class VendingStartPage extends JFrame{
 						manager.machine.SaleBeverage(3);    // 음료 판매기록 자판기 기록
 						TotalUserMoney-=Blist[3].getPrice();                       //현재 입력 돈 업데이트
 						fieldCashInput.setText(Integer.toString(TotalUserMoney));  // 텍스트 필드 업데이트
-						labelBeverageOut.setIcon(button_premium_coffee_image);
+						labelBeverageOut.setIcon(retton_premiumCoffee_image);
 					}
 					else{
 						JOptionPane.showMessageDialog(null,"잔액이 부족합니다","자판기 경고",JOptionPane.WARNING_MESSAGE);
@@ -303,8 +342,10 @@ public class VendingStartPage extends JFrame{
 
 	public JButton getButtonCoke() {
 		if(buttonCoke==null) {
+			
 			buttonCoke=new JButton(Blist[4].getName()+
 					Blist[4].getPrice()+"원",no_button_coke_image);
+			buttonCoke.setBackground(new Color(255, 251, 18));
 			buttonCoke.addMouseListener(new MouseAdapter() {
 					
 				@Override
@@ -315,7 +356,7 @@ public class VendingStartPage extends JFrame{
 						manager.machine.SaleBeverage(4);    // 음료 판매기록 자판기 기록
 						TotalUserMoney-=Blist[4].getPrice();                       //현재 입력 돈 업데이트
 						fieldCashInput.setText(Integer.toString(TotalUserMoney));  // 텍스트 필드 업데이트
-						labelBeverageOut.setIcon(button_coke_image);
+						labelBeverageOut.setIcon(return_coke_Image);
 					}
 					else{
 						JOptionPane.showMessageDialog(null,"잔액이 부족합니다","자판기 경고",JOptionPane.WARNING_MESSAGE);
@@ -330,7 +371,8 @@ public class VendingStartPage extends JFrame{
 
 	public JLabel getLabelBeverageOut() {
 		if(labelBeverageOut==null) {
-			labelBeverageOut=new JLabel("");
+			labelBeverageOut=new JLabel(return_Image);
+			labelBeverageOut.setBorder(BorderFactory.createEmptyBorder(130, 0, 0, 0));
 		}
 		return labelBeverageOut;
 	}
@@ -520,12 +562,13 @@ public class VendingStartPage extends JFrame{
 						MachineCoin.set_50won(MachineCoin.get_50won()-countarr[3]);
 						MachineCoin.set_10won(MachineCoin.get_10won()-countarr[4]);
 						
-						manager.machine.initInfo();
+						fileIO.saveToFile(manager.machine);
 						
 						for(int i=0;i<5;i++)
 							countarr[i]=0;
 						System.out.println(MachineCoin.get_10won()+" 개,"+MachineCoin.get_50won()+
 								" 개,"+MachineCoin.get_100won()+" 개,"+MachineCoin.get_500won()+" 개,"+MachineCoin.get_1000won()+" 개");
+						$1000count=0;
 						}
 						else {
 							JOptionPane.showMessageDialog(null,"거스름돈이 부족합니다","자판기 경고",JOptionPane.WARNING_MESSAGE);
@@ -550,8 +593,10 @@ public class VendingStartPage extends JFrame{
 					String password=JOptionPane.showInputDialog("비밀번호를 입력해주세요");
 					if(password.equals("1234")) {
 						//화면 전환 이벤트 처리
-						main.showLoginFrame();
+						
 						fileIO.saveToFile(manager.machine);
+						
+						new AdminFrame();
 						
 					}
 					else {
@@ -701,7 +746,7 @@ public class VendingStartPage extends JFrame{
 	}
 
 	
-	public void setMain(Main main) {
+	public void setMain(VmMain main) {
 		// TODO Auto-generated method stub
 		this.main=main;
 	}

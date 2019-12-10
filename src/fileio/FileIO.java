@@ -45,7 +45,7 @@ public class FileIO {
 	 * 매게 변수 : VendingMachine
 	 * 기능      : 자판기를 매개변수로 받아 자판기의 정보를 저장한다
 	 * */
-	public static void saveToFile(VendingMachine machine) {
+	public void saveToFile(VendingMachine machine) {
 		
 		BufferedWriter writer = null;
 		try {
@@ -55,7 +55,7 @@ public class FileIO {
 					writer = new BufferedWriter(new FileWriter(temp.name()+".txt"));
 					writer.write(StringForSave);
 					StringForSave = ""; // 초기화
-					for(int i=0;i<31;i++) {
+					for(int i=0;i<32;i++) {
 						for(int j=0;j<5;j++) {
 							writer.write(Integer.toString(data[temp.ordinal()][i][j])+",");
 						}
@@ -86,7 +86,7 @@ public class FileIO {
 	 * 기능      : 자판기 생성 초기에 파일을 생성해 주는 함수이다
 	 *             이미 존재하는 파일이라면 생성하지 않는다
 	 * */
-	public void createFile() {
+	public void createFile(VendingMachine machine) {
 		
         //absolute file name with path
       for(Month temp:Month.values()) {
@@ -95,7 +95,10 @@ public class FileIO {
         try {
 			if(file.createNewFile()){
 			    System.out.println(file.getName()+" 파일이 생성되었습니다");
-			}else System.out.println("File "+file.getName()+" 이미 존재하는 파일 입니다.");
+			}else {
+				System.out.println("File "+file.getName()+" 이미 존재하는 파일 입니다.");
+				readFile(machine);
+			}
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -117,29 +120,28 @@ public class FileIO {
 		int[][][] _dailySalesByDrink=new int[13][32][5];
 		try {
 			for (Month temp: Month.values()) {
-				read = new BufferedReader(new FileReader(temp.name()+".txt"));
 				try {
+					read = new BufferedReader(new FileReader(temp.name()+".txt"));
 					int daily=0;
 					while ((s = read.readLine()) != null) {
 						StringTokenizer row = new StringTokenizer(s, ",");
 						int i=0;
 						while (row.hasMoreTokens()) {// 리턴할 다음 토큰이 있는지 여부 확인
-							if(i<5&&daily<32) {
+							//if(i<5&&daily<32) {
 								_dailySalesByDrink[temp.ordinal()][daily][i++] = Integer.parseInt(row.nextToken()); // 배열에 각 값을 담기
-							}
+							//}
 						}
 						daily++;
 					}
-					machine.setDailySalesByDrink(_dailySalesByDrink);
+
+					read.close();
 				} catch (IOException e) {
 					e.printStackTrace();
 				}
 				
+				
 			}
-		} catch (
-
-		FileNotFoundException e) {
-			e.printStackTrace();
+			machine.setDailySalesByDrink(_dailySalesByDrink);
 		} finally {
 			try {
 				read.close();

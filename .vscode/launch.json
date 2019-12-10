@@ -1,0 +1,11 @@
+{
+    "configurations": [
+        {
+            "type": "java",
+            "name": "CodeLens (Launch) - VmMain",
+            "request": "launch",
+            "mainClass": "ui.VmMain",
+            "projectName": "VendingMacine(수정본)"
+        }
+    ]
+}

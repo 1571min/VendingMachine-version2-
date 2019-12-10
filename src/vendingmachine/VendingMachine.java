@@ -57,8 +57,9 @@ public class VendingMachine {
 		MonthlySalesByDrink = new int[5][13];
 		BeverageStuck=new int[5];
 		
-		fileObject.createFile();
-		fileObject.saveToFile(this);
+		fileObject.createFile(this);
+		//fileObject.saveToFile(this);/// 뭐 이런 코드를;;;쓰냐
+		
 
 		today = new GregorianCalendar(Locale.KOREA);
 	}
@@ -109,29 +110,11 @@ public class VendingMachine {
 	 * private int[] BeverageStuck;
 	 * */
 	public void SaleBeverage(int beverage_number) {
-		Beverage_list[beverage_number].countdown();
-		DailySales[today.get(today.MONTH)][today.get(today.DAY_OF_MONTH)]++;
-		DailySalesByDrink[beverage_number][today.get(today.MONTH)][today.get(today.DAY_OF_MONTH)]++;
-		MonthlySale[today.get(today.MONTH)]++;
-		MonthlySalesByDrink[beverage_number][today.get(today.MONTH)]++;
-		BeverageStuck[beverage_number]++;
+		DailySalesByDrink[today.get(today.MONTH)][today.get(today.DAY_OF_MONTH)-1][beverage_number]++;
+		
 	}
-	public void initInfo() {
-		fileObject.saveToFile(this);
-	}
-
 	
-//	 int getBeverageSales(int index) {
-//		int sum=0;
-//		
-//		for(int i=0;i<13;i++) {
-//			sum+=MonthlySalesByDrink[index][i];
-//		}
-//		 
-//		 return sum;
-//	}
-	 
-	 
+
 	
 	 
 }
