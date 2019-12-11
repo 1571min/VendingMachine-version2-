@@ -2,6 +2,8 @@ package ui;
 
 import java.awt.EventQueue;
 
+import vendingmachine.VendingMachine;
+
 public class VmMain {
 
 	static AdminFrame adminPage;
@@ -23,6 +25,10 @@ public class VmMain {
 				}
 			}
 		});
+	}
+	
+	public void resetMachine(VendingMachine machine) {
+		startPage.manager.machine=machine;
 	}
 
 

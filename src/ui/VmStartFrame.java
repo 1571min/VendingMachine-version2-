@@ -31,7 +31,6 @@ public class VmStartFrame extends JFrame{
 	//자판기 화면 구성요소 필드
 	private FileIO fileIO;
 	private VmMain main;
-	
 	//자판기 메인 화면 판넬
 	private JPanel mainPanel;
 	private JPanel beveragePanel;
@@ -110,7 +109,6 @@ public class VmStartFrame extends JFrame{
 	
 	
 	public static ImageIcon vendingImage;
-	
 	///이미지 객체 할당
 	static {
 		try {
@@ -378,7 +376,6 @@ public class VmStartFrame extends JFrame{
 	}
 
 	
-	
 	/*
 	 * 분류   : 동전 버튼 getter함수
 	 * 반환형 : JButton
@@ -397,6 +394,7 @@ public class VmStartFrame extends JFrame{
 						super.mousePressed(e);
 					    TotalUserMoney+=10;
 					    MachineCoin.countup10won();
+					    manager.machine.setCoin(MachineCoin);
 					    fieldCashInput.setText(Integer.toString(TotalUserMoney));
 					}
 					else {
@@ -423,6 +421,7 @@ public class VmStartFrame extends JFrame{
 						super.mousePressed(e);
 					    TotalUserMoney+=50;
 					    MachineCoin.countup50won();
+					    manager.machine.setCoin(MachineCoin);
 					    fieldCashInput.setText(Integer.toString(TotalUserMoney));
 					}
 					else {
@@ -449,6 +448,7 @@ public class VmStartFrame extends JFrame{
 						super.mousePressed(e);
 					    TotalUserMoney+=100;
 					    MachineCoin.countup100won();
+					    manager.machine.setCoin(MachineCoin);
 					    fieldCashInput.setText(Integer.toString(TotalUserMoney));
 					}
 					else {
@@ -475,6 +475,7 @@ public class VmStartFrame extends JFrame{
 						super.mousePressed(e);
 					    TotalUserMoney+=500;
 					    MachineCoin.countup500won();
+					    manager.machine.setCoin(MachineCoin);
 					    fieldCashInput.setText(Integer.toString(TotalUserMoney));
 					}
 					else {
@@ -502,6 +503,7 @@ public class VmStartFrame extends JFrame{
 									super.mousePressed(e);
 								    TotalUserMoney+=1000;
 								    MachineCoin.countup1000won();
+								    manager.machine.setCoin(MachineCoin);
 								    fieldCashInput.setText(Integer.toString(TotalUserMoney));
 								    $1000count++;
 								}
@@ -561,7 +563,7 @@ public class VmStartFrame extends JFrame{
 						MachineCoin.set_100won(MachineCoin.get_100won()-countarr[2]);
 						MachineCoin.set_50won(MachineCoin.get_50won()-countarr[3]);
 						MachineCoin.set_10won(MachineCoin.get_10won()-countarr[4]);
-						
+						manager.machine.setCoin(MachineCoin);
 						fileIO.saveToFile(manager.machine);
 						
 						for(int i=0;i<5;i++)
@@ -590,13 +592,14 @@ public class VmStartFrame extends JFrame{
 				public void mousePressed(MouseEvent e) {
 					
 					super.mousePressed(e);
+					
 					String password=JOptionPane.showInputDialog("비밀번호를 입력해주세요");
-					if(password.equals("1234")) {
+					if(password.equals(manager.machine.getPassword())) {
 						//화면 전환 이벤트 처리
 						
 						fileIO.saveToFile(manager.machine);
 						
-						new AdminFrame();
+						new AdminFrame().setMain(main);
 						
 					}
 					else {

@@ -15,6 +15,7 @@ public class VendingMachine {
 	private int[][] MonthlySalesByDrink;
 	private int[] BeverageStuck;
 	private FileIO fileObject;
+	private String password;
 	
 	public Coin getVending_coin() {
 		return vending_coin;
@@ -42,7 +43,7 @@ public class VendingMachine {
 
 	public VendingMachine() {
 		fileObject=new FileIO();
-		
+		password="1";
 		vending_coin = new Coin();
 		Beverage_list = new Beverage[] { 
 				new Beverage("물", 450, 3), 
@@ -55,7 +56,7 @@ public class VendingMachine {
 		DailySalesByDrink = new int[13][32][5];
 		MonthlySale = new int[13];
 		MonthlySalesByDrink = new int[5][13];
-		BeverageStuck=new int[5];
+		BeverageStuck=new int[] {3,3,3,3,3};
 		
 		fileObject.createFile(this);
 		//fileObject.saveToFile(this);/// 뭐 이런 코드를;;;쓰냐
@@ -99,8 +100,19 @@ public class VendingMachine {
 	public void setCoin(Coin coin) {
 		this.vending_coin = coin;
 	}
+	
+	
+	
 
 	
+	public String getPassword() {
+		return password;
+	}
+
+	public void setPassword(String password) {
+		this.password = password;
+	}
+
 	//음료를 구매햇을 때 발생할 함수
 	/*
 	 * private int[][] DailySales;
@@ -111,6 +123,7 @@ public class VendingMachine {
 	 * */
 	public void SaleBeverage(int beverage_number) {
 		DailySalesByDrink[today.get(today.MONTH)][today.get(today.DAY_OF_MONTH)-1][beverage_number]++;
+		BeverageStuck[beverage_number]--;
 		
 	}
 	

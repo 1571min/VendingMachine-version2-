@@ -1,43 +1,66 @@
 package ui;
 
 import java.awt.BorderLayout;
+import java.awt.CardLayout;
+import java.awt.Color;
+import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.EventQueue;
 import java.awt.FlowLayout;
 import java.awt.GridLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.util.Arrays;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JList;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JPasswordField;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.border.EmptyBorder;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableModel;
 
 import fileio.FileIO;
+import vendingmachine.Coin;
 import vendingmachine.Manager;
 
 public class AdminFrame extends JFrame{
 	private VmMain main;
+	private CardLayout cards = new CardLayout();
+
 	
 	private JPanel mainPanel;
 	private JPanel chartPanel;
 	private JPanel menuPanel;
+	
 	private JPanel SalesRatePanel;
+	private JPanel BeverageStuckPanel;
+	private JPanel CoinStuckPanel;
+	private JPanel PWChangePanel;
+	
 	
 	private JButton SalesRateButton;
 	private JButton BeverageButton;
-	private JButton CollectButton;
-	private JButton StockButton;
 	private JButton CoinButton;
 	private JButton PWChangeButton;
 	private JButton ReturnButton;
 	
 	private Manager manager2;
 	private FileIO fileIO;
-
+	DefaultTableModel SalesModel;
+	DefaultTableModel BeverageModel;
+	String password;
 	
 	public AdminFrame() {
 		/*
@@ -51,7 +74,7 @@ public class AdminFrame extends JFrame{
 		mainPanel.setLayout(new BorderLayout());
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
 		setLocation(400,300);
-		setSize(700, 400);
+		setSize(800, 400);
 		setTitle("자판기 프로그램");
 		fileIO=new FileIO();
 		manager2=new Manager();
@@ -69,34 +92,13 @@ public class AdminFrame extends JFrame{
 	public JPanel getChartPanel() {
 		if(chartPanel==null) {
 			chartPanel=new JPanel();
-			chartPanel.setBorder(new EmptyBorder(5,5,5,5));
-			chartPanel.setPreferredSize(new Dimension(500,500));
-			
-			int[][][] test=manager2.machine.getDailySalesByDrink();
-			Integer[][][] boxedArray = new Integer[13][32][5];
-			String []a = {
-					"물"
-					,"커피"
-					,"이온"
-					,"고급커피"
-					,"콜라"
-			};
-			
-			for (int i = 0; i < 13; i++) {
-				for (int j = 0; j < 32; j++) {
-					for (int j2 = 0; j2 <5; j2++) {
-						boxedArray[i][j][j2] = Integer.valueOf(test[i][j][j2]);
-					}
-				}
-			}
-			
-			
-			JTable jTable=new JTable(boxedArray[11],a);
-			JScrollPane jScrollPane=new JScrollPane(jTable);
-			jScrollPane.setPreferredSize(new Dimension(300,300));
-			chartPanel.add(jScrollPane);
-			chartPanel.setSize(500, 500);
+			chartPanel.setLayout(cards);
+			chartPanel.add(getSalesRatePanel(),"Sales");
+			chartPanel.add(getBeverageStuckPanel(),"Beverage");
+			chartPanel.add(getCoinStuckPanel(),"Coin");
+			chartPanel.add(getPWChangePanel(),"PW");
 		}
+		
 		return chartPanel;
 	}
 
@@ -108,8 +110,6 @@ public class AdminFrame extends JFrame{
 			menuPanel.setLayout(new GridLayout(8,1));
 			menuPanel.add(getDayButton());
 			menuPanel.add(getBeverageButton());
-			menuPanel.add(getCollectButton());
-			menuPanel.add(getStockButton());
 			menuPanel.add(getCoinButton());
 			menuPanel.add(getPWChangeButton());
 			menuPanel.add(getReturnButton());
@@ -117,45 +117,289 @@ public class AdminFrame extends JFrame{
 		return menuPanel;
 	}
 
-	public JButton getDayButton() {
+	public JPanel getSalesRatePanel() {
+		if(SalesRatePanel==null) {
+			SalesRatePanel=new JPanel();
+			SalesRatePanel.setBorder(new EmptyBorder(5,5,5,5));
+			SalesRatePanel.setPreferredSize(new Dimension(500,500));
+			JTable SalesTable=new JTable();
+			String[] monthListName= {"1월","2월","3월","4월","5월","6월",
+					         "7월","8월","9월","10월","11월","12월"};
+			String []columnNames = {
+					"날짜","물","커피"
+					,"이온","고급커피","콜라"};
+			
+			
+			//month 스크롤 바 파트
+			JList<String> monthList=new JList<String>();
+			monthList.setListData(monthListName);
+			monthList.setSelectionBackground(Color.YELLOW);
+			monthList.setSelectionForeground(Color.RED);
+			JScrollPane monthScroll=new JScrollPane(monthList);
+			SalesRatePanel.add(monthScroll);
+			
+			
+			int[][][] machineSalesArray=manager2.machine.getDailySalesByDrink();
+			String[][][] boxedArray = new String[13][32][5];
+			
+			for (int i = 0; i < 13; i++) {
+				for (int j = 0; j < 32; j++) {
+					for (int j2 = 0; j2 <5; j2++) {
+						boxedArray[i][j][j2] = Integer.toString(machineSalesArray[i][j][j2]);
+					}
+				}
+			}
+			
+			monthList.addListSelectionListener(new ListSelectionListener() {
+				
+				@Override
+				public void valueChanged(ListSelectionEvent e) {
+					// TODO Auto-generated method stub
+					int index = monthList.getSelectedIndex();
+					SalesModel=new DefaultTableModel(columnNames,0);
+					
+					for (int j = 0; j < 32; j++) {
+						String DayName=Integer.toString(j)+"일";
+						String[] rowdata={DayName,
+								boxedArray[index][j][0],
+								boxedArray[index][j][1],
+								boxedArray[index][j][2],
+								boxedArray[index][j][3],
+								boxedArray[index][j][4],};
+						SalesModel.addRow(rowdata);
+						
+					}
+					SalesTable.setModel(SalesModel);
+				}
+			});
+
+			JScrollPane jScrollPane=new JScrollPane(SalesTable);
+			jScrollPane.setPreferredSize(new Dimension(300,300));
+			SalesRatePanel.add(jScrollPane);
+			SalesRatePanel.setSize(500, 500);
+		}
 		
-		SalesRateButton=new JButton("월별 매출량");
+		
+		return SalesRatePanel;
+	}
+
+	public JPanel getBeverageStuckPanel() {
+		if(BeverageStuckPanel==null) {
+			BeverageStuckPanel=new JPanel();
+			BeverageStuckPanel.setBorder(new EmptyBorder(5,5,5,5));
+			BeverageStuckPanel.setPreferredSize(new Dimension(500,500));
+			
+			JTable BeverageTable=new JTable();
+			String []columnNames = {
+					"물","커피"
+					,"이온","고급커피","콜라"};
+			
+			BeverageModel=new DefaultTableModel(columnNames,0);
+			
+			int[] machineBeverageArray=manager2.machine.getBeverageStuck();
+			String[] boxedArray = new String[5];
+			for(int i=0;i<5;i++) {
+				boxedArray[i]=Integer.toString(machineBeverageArray[i]);
+			}
+		
+			String[] rowdata={
+					boxedArray[0],
+					boxedArray[1],
+					boxedArray[2],
+					boxedArray[3],
+					boxedArray[4],};
+			BeverageModel.addRow(rowdata);
+			BeverageTable.setModel(BeverageModel);
+			
+			
+			JScrollPane jScrollPane=new JScrollPane(BeverageTable);
+			jScrollPane.setPreferredSize(new Dimension(300,300));
+			BeverageStuckPanel.add(jScrollPane);
+			BeverageStuckPanel.setSize(500, 500);
+		}
+		return BeverageStuckPanel;
+	}
+
+	public JPanel getCoinStuckPanel() {
+		if(CoinStuckPanel==null) {
+			CoinStuckPanel=new JPanel();
+			CoinStuckPanel.setBorder(new EmptyBorder(5,5,5,5));
+			CoinStuckPanel.setPreferredSize(new Dimension(500,500));
+			
+			JTable BeverageTable=new JTable();
+			String []columnNames = {
+					"10원","50원"
+					,"100원","500원","1000원"};
+			
+			BeverageModel=new DefaultTableModel(columnNames,0);
+			
+			Coin machineCoin=manager2.machine.getCoin();
+			String[] boxedArray = new String[5];
+			
+			boxedArray[0]=Integer.toString(machineCoin.get_10won());
+			boxedArray[1]=Integer.toString(machineCoin.get_50won());
+			boxedArray[2]=Integer.toString(machineCoin.get_100won());
+			boxedArray[3]=Integer.toString(machineCoin.get_500won());
+			boxedArray[4]=Integer.toString(machineCoin.get_1000won());
+			
+		
+			String[] rowdata={
+					boxedArray[0],
+					boxedArray[1],
+					boxedArray[2],
+					boxedArray[3],
+					boxedArray[4],};
+			BeverageModel.addRow(rowdata);
+			BeverageTable.setModel(BeverageModel);
+			
+			
+			JScrollPane jScrollPane=new JScrollPane(BeverageTable);
+			jScrollPane.setPreferredSize(new Dimension(300,300));
+			CoinStuckPanel.add(jScrollPane);
+			CoinStuckPanel.setSize(500, 500);
+		}
+		return CoinStuckPanel;
+	}
+
+	public JPanel getPWChangePanel() {
+		if(PWChangePanel==null) {
+			PWChangePanel=new JPanel();
+			PWChangePanel.setLayout(new FlowLayout(FlowLayout.CENTER));
+			PWChangePanel.setBorder(new EmptyBorder(5,5,5,5));
+			PWChangePanel.setPreferredSize(new Dimension(200,150));
+			JButton change=new JButton("바꾸기");
+			String pwPattern = "^(?=.*[A-Za-z])(?=.*[0-9])(?=.*[$@$!%*#?&])[A-Za-z[0-9]$@$!%*#?&]{8,20}$";
+
+
+			
+
+			JPasswordField value = new JPasswordField(25);
+			value.setSize(200, 50);
+		    JLabel l1=new JLabel("Password((영문(대소문자 구분), 숫자, 특수문자 조합, 8이상) :");    
+
+		    PWChangePanel.add(l1);
+		    PWChangePanel.add(value);
+		    PWChangePanel.add(change);
+		    
+		    
+		    change.addMouseListener(new MouseAdapter() {
+
+				@Override
+				public void mousePressed(MouseEvent e) {
+					// TODO Auto-generated method stub
+					super.mousePressed(e);
+					password=new String(value.getPassword());
+					Matcher match = Pattern.compile(pwPattern).matcher(password);
+					
+					
+				    if(match.find()){
+				        manager2.machine.setPassword(password);
+				        JOptionPane.showMessageDialog(null,"비밀번호가 변경되었습니다.","자판기 알림",JOptionPane.INFORMATION_MESSAGE);
+				        fileIO.saveToFile(manager2.machine);
+				    }
+				    else {
+				    	JOptionPane.showMessageDialog(null,"비밀번호는 영문(대소문자 구분), 숫자, 특수문자 조합, 8자리 이상입니다","자판기 경고",JOptionPane.WARNING_MESSAGE);
+				    }
+				}
+		    	
+			});
+		   
+
+		 
+			
+		}
+		return PWChangePanel;
+	}
+
+	public JButton getDayButton() {
+		if(SalesRateButton==null) {
+			SalesRateButton=new JButton("월별 매출량");
+			
+			SalesRateButton.addMouseListener(new MouseAdapter() {
+
+				@Override
+				public void mousePressed(MouseEvent e) {
+					
+					super.mousePressed(e);
+					
+					cards.show(chartPanel,"Sales");
+					
+				}
+				
+			});
+		
+
+			
+		}
+		
 		return SalesRateButton;
 	}
 
-
 	public JButton getBeverageButton() {
-		BeverageButton=new JButton("음료별");
+		if(BeverageButton==null) {
+			BeverageButton=new JButton("음료");
+			
+			BeverageButton.addMouseListener(new MouseAdapter() {
+
+				@Override
+				public void mousePressed(MouseEvent e) {
+					// TODO Auto-generated method stub
+					super.mousePressed(e);
+					cards.show(chartPanel,"Beverage");
+				}});
+		}
 		return BeverageButton;
 	}
 
-
-	public JButton getCollectButton() {
-		CollectButton =new JButton("수금");
-		return CollectButton;
-	}
-
-
-	public JButton getStockButton() {
-		StockButton=new JButton("재고");
-		return StockButton;
-	}
-
-
 	public JButton getCoinButton() {
-		CoinButton=new JButton("화폐");
+		if(CoinButton==null) {
+			CoinButton=new JButton("화폐재고");
+			
+			CoinButton.addMouseListener(new MouseAdapter() {
+
+				@Override
+				public void mousePressed(MouseEvent e) {
+					// TODO Auto-generated method stub
+					super.mousePressed(e);
+					cards.show(chartPanel,"Coin");
+				}});
+		}
 		return CoinButton;
 	}
 
-
 	public JButton getPWChangeButton() {
-		PWChangeButton=new JButton("비밀번호 변경");
+		if(PWChangeButton==null) {
+			PWChangeButton=new JButton("비밀번호 변경");
+			
+			PWChangeButton.addMouseListener(new MouseAdapter() {
+
+				@Override
+				public void mousePressed(MouseEvent e) {
+					// TODO Auto-generated method stub
+					super.mousePressed(e);
+					cards.show(chartPanel,"PW");
+				}});
+		}
 		return PWChangeButton;
 	}
 
-
 	public JButton getReturnButton() {
-		ReturnButton=new JButton("자판기 페이지");
+		if(ReturnButton==null) {
+			JFrame container=this;
+			ReturnButton=new JButton("돌아가기");
+			ReturnButton.addMouseListener(new MouseAdapter() {
+
+				@Override
+				public void mousePressed(MouseEvent e) {
+					// TODO 파일 저장 구현해야됨
+					super.mousePressed(e);
+					main.resetMachine(manager2.machine);
+					
+					container.dispose();
+				}
+				
+			});
+		}
 		return ReturnButton;
 	}
 
