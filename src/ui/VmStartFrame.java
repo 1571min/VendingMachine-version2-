@@ -233,14 +233,19 @@ public class VmStartFrame extends JFrame{
 				public void mousePressed(MouseEvent e) {
 					// TODO Auto-generated method stub
 					super.mousePressed(e);
-					if(TotalUserMoney>=Blist[0].getPrice()){
-						manager.machine.SaleBeverage(0);    // 음료 판매기록 자판기 기록
-						TotalUserMoney-=Blist[0].getPrice();                       //현재 입력 돈 업데이트
-						fieldCashInput.setText(Integer.toString(TotalUserMoney));  // 텍스트 필드 업데이트
-						labelBeverageOut.setIcon(return_water_Image);
+					if(manager.machine.getBeverageStuck()[0]>0) {
+						if(TotalUserMoney>=Blist[0].getPrice()){
+							manager.machine.SaleBeverage(0);    // 음료 판매기록 자판기 기록
+							TotalUserMoney-=Blist[0].getPrice();                       //현재 입력 돈 업데이트
+							fieldCashInput.setText(Integer.toString(TotalUserMoney));  // 텍스트 필드 업데이트
+							labelBeverageOut.setIcon(return_water_Image);
+						}
+						else{
+							JOptionPane.showMessageDialog(null,"잔액이 부족합니다","자판기 경고",JOptionPane.WARNING_MESSAGE);
+						}
 					}
 					else{
-						JOptionPane.showMessageDialog(null,"잔액이 부족합니다","자판기 경고",JOptionPane.WARNING_MESSAGE);
+						JOptionPane.showMessageDialog(null,"재고가 부족합니다","자판기 경고",JOptionPane.WARNING_MESSAGE);
 					}
 					cheakbeverage(TotalUserMoney,Blist);
 				}
@@ -262,14 +267,20 @@ public class VmStartFrame extends JFrame{
 				public void mousePressed(MouseEvent e) {
 					// TODO Auto-generated method stub
 					super.mousePressed(e);
-					if(TotalUserMoney>=Blist[1].getPrice()){
-						manager.machine.SaleBeverage(1);    // 음료 판매기록 자판기 기록
-						TotalUserMoney-=Blist[1].getPrice();                       //현재 입력 돈 업데이트
-						fieldCashInput.setText(Integer.toString(TotalUserMoney));  // 텍스트 필드 업데이트
-						labelBeverageOut.setIcon(return_coffee_Image);
+					
+					if(manager.machine.getBeverageStuck()[1]>0) {
+						if(TotalUserMoney>=Blist[1].getPrice()){
+							manager.machine.SaleBeverage(1);    // 음료 판매기록 자판기 기록
+							TotalUserMoney-=Blist[1].getPrice();                       //현재 입력 돈 업데이트
+							fieldCashInput.setText(Integer.toString(TotalUserMoney));  // 텍스트 필드 업데이트
+							labelBeverageOut.setIcon(return_coffee_Image);
+						}
+						else{
+							JOptionPane.showMessageDialog(null,"잔액이 부족합니다","자판기 경고",JOptionPane.WARNING_MESSAGE);
+						}
 					}
 					else{
-						JOptionPane.showMessageDialog(null,"잔액이 부족합니다","자판기 경고",JOptionPane.WARNING_MESSAGE);
+						JOptionPane.showMessageDialog(null,"재고가 부족합니다","자판기 경고",JOptionPane.WARNING_MESSAGE);
 					}
 					cheakbeverage(TotalUserMoney,Blist);
 				}
@@ -292,14 +303,21 @@ public class VmStartFrame extends JFrame{
 				public void mousePressed(MouseEvent e) {
 					// TODO Auto-generated method stub
 					super.mousePressed(e);
-					if(TotalUserMoney>=Blist[2].getPrice()){
-						manager.machine.SaleBeverage(2);    // 음료 판매기록 자판기 기록
-						TotalUserMoney-=Blist[2].getPrice();                       //현재 입력 돈 업데이트
-						fieldCashInput.setText(Integer.toString(TotalUserMoney));  // 텍스트 필드 업데이트
-						labelBeverageOut.setIcon(return_Ion_Image);
+					
+					
+					if(manager.machine.getBeverageStuck()[2]>0) {
+						if(TotalUserMoney>=Blist[2].getPrice()){
+							manager.machine.SaleBeverage(2);    // 음료 판매기록 자판기 기록
+							TotalUserMoney-=Blist[2].getPrice();                       //현재 입력 돈 업데이트
+							fieldCashInput.setText(Integer.toString(TotalUserMoney));  // 텍스트 필드 업데이트
+							labelBeverageOut.setIcon(return_Ion_Image);
+						}
+						else{
+							JOptionPane.showMessageDialog(null,"잔액이 부족합니다","자판기 경고",JOptionPane.WARNING_MESSAGE);
+						}
 					}
 					else{
-						JOptionPane.showMessageDialog(null,"잔액이 부족합니다","자판기 경고",JOptionPane.WARNING_MESSAGE);
+						JOptionPane.showMessageDialog(null,"재고가 부족합니다","자판기 경고",JOptionPane.WARNING_MESSAGE);
 					}
 					cheakbeverage(TotalUserMoney,Blist);
 				}
@@ -321,14 +339,20 @@ public class VmStartFrame extends JFrame{
 				public void mousePressed(MouseEvent e) {
 					// TODO Auto-generated method stub
 					super.mousePressed(e);
-					if(TotalUserMoney>=Blist[3].getPrice()){
-						manager.machine.SaleBeverage(3);    // 음료 판매기록 자판기 기록
-						TotalUserMoney-=Blist[3].getPrice();                       //현재 입력 돈 업데이트
-						fieldCashInput.setText(Integer.toString(TotalUserMoney));  // 텍스트 필드 업데이트
-						labelBeverageOut.setIcon(retton_premiumCoffee_image);
+					
+					if(manager.machine.getBeverageStuck()[3]>0) {
+						if(TotalUserMoney>=Blist[3].getPrice()){
+							manager.machine.SaleBeverage(3);    // 음료 판매기록 자판기 기록
+							TotalUserMoney-=Blist[3].getPrice();                       //현재 입력 돈 업데이트
+							fieldCashInput.setText(Integer.toString(TotalUserMoney));  // 텍스트 필드 업데이트
+							labelBeverageOut.setIcon(retton_premiumCoffee_image);
+						}
+						else{
+							JOptionPane.showMessageDialog(null,"잔액이 부족합니다","자판기 경고",JOptionPane.WARNING_MESSAGE);
+						}
 					}
 					else{
-						JOptionPane.showMessageDialog(null,"잔액이 부족합니다","자판기 경고",JOptionPane.WARNING_MESSAGE);
+						JOptionPane.showMessageDialog(null,"재고가 부족합니다","자판기 경고",JOptionPane.WARNING_MESSAGE);
 					}
 					cheakbeverage(TotalUserMoney,Blist);
 				}
@@ -350,14 +374,20 @@ public class VmStartFrame extends JFrame{
 				public void mousePressed(MouseEvent e) {
 					// TODO Auto-generated method stub
 					super.mousePressed(e);
-					if(TotalUserMoney>=Blist[4].getPrice()){
-						manager.machine.SaleBeverage(4);    // 음료 판매기록 자판기 기록
-						TotalUserMoney-=Blist[4].getPrice();                       //현재 입력 돈 업데이트
-						fieldCashInput.setText(Integer.toString(TotalUserMoney));  // 텍스트 필드 업데이트
-						labelBeverageOut.setIcon(return_coke_Image);
+					
+					if(manager.machine.getBeverageStuck()[4]>0) {
+						if(TotalUserMoney>=Blist[4].getPrice()){
+							manager.machine.SaleBeverage(4);    // 음료 판매기록 자판기 기록
+							TotalUserMoney-=Blist[4].getPrice();                       //현재 입력 돈 업데이트
+							fieldCashInput.setText(Integer.toString(TotalUserMoney));  // 텍스트 필드 업데이트
+							labelBeverageOut.setIcon(return_coke_Image);
+						}
+						else{
+							JOptionPane.showMessageDialog(null,"잔액이 부족합니다","자판기 경고",JOptionPane.WARNING_MESSAGE);
+						}
 					}
 					else{
-						JOptionPane.showMessageDialog(null,"잔액이 부족합니다","자판기 경고",JOptionPane.WARNING_MESSAGE);
+						JOptionPane.showMessageDialog(null,"재고가 부족합니다","자판기 경고",JOptionPane.WARNING_MESSAGE);
 					}
 					cheakbeverage(TotalUserMoney,Blist);
 				}
@@ -622,7 +652,7 @@ public class VmStartFrame extends JFrame{
 	 * */
 	public void cheakbeverage(int money,Beverage[] blist) {
 		//water
-		if(blist[0].getCount()>0) {
+		if(manager.machine.getBeverageStuck()[0]>0) {
 			if(blist[0].getPrice()<=money) {
 				buttonWater.setIcon(button_water_image);
 			}
@@ -634,7 +664,7 @@ public class VmStartFrame extends JFrame{
 			buttonWater.setIcon(no_button_water_image);
 		}
 		//coffee
-		if(blist[1].getCount()>0) {
+		if(manager.machine.getBeverageStuck()[1]>0) {
 			if(blist[1].getPrice()<=money) {
 				buttonCoffee.setIcon(button_coffee_image);
 			}
@@ -646,7 +676,7 @@ public class VmStartFrame extends JFrame{
 			buttonCoffee.setIcon(no_button_coffee_image);
 		}
 		//ion
-		if(blist[2].getCount()>0) {
+		if(manager.machine.getBeverageStuck()[2]>0) {
 			if(blist[2].getPrice()<=money) {
 				buttonIon.setIcon(button_ion_image);
 			}
@@ -659,7 +689,7 @@ public class VmStartFrame extends JFrame{
 		}
 		
 		//premium_coffee
-		if(blist[3].getCount()>0) {
+		if(manager.machine.getBeverageStuck()[3]>0) {
 			if(blist[3].getPrice()<=money) {
 				buttonPremiumCoffee.setIcon(button_premium_coffee_image);
 			}
@@ -672,7 +702,7 @@ public class VmStartFrame extends JFrame{
 		}
 		
 		//coke
-		if(blist[4].getCount()>0) {
+		if(manager.machine.getBeverageStuck()[4]>0) {
 			if(blist[4].getPrice()<=money) {
 				buttonCoke.setIcon(button_coke_image);
 			}
@@ -683,7 +713,6 @@ public class VmStartFrame extends JFrame{
 		else {
 			buttonCoke.setIcon(no_button_coke_image);
 		}
-		
 	}
 	
 	

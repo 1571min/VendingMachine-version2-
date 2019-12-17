@@ -9,37 +9,10 @@ public class VendingMachine {
 	private Beverage[] Beverage_list;
 	private Coin vending_coin;
 	private GregorianCalendar today;
-	private int[][] DailySales;
-	private int[] MonthlySale;
 	private int[][][] DailySalesByDrink;
-	private int[][] MonthlySalesByDrink;
 	private int[] BeverageStuck;
 	private FileIO fileObject;
 	private String password;
-	
-	public Coin getVending_coin() {
-		return vending_coin;
-	}
-
-	public int[][] getDailySales() {
-		return DailySales;
-	}
-
-	public int[] getMonthlySale() {
-		return MonthlySale;
-	}
-
-	public int[][][] getDailySalesByDrink() {
-		return DailySalesByDrink;
-	}
-
-	public int[][] getMonthlySalesByDrink() {
-		return MonthlySalesByDrink;
-	}
-	
-	public void setDailySalesByDrink(int[][][] dailySalesByDrink) {
-		DailySalesByDrink = dailySalesByDrink;
-	}                           
 
 	public VendingMachine() {
 		fileObject=new FileIO();
@@ -52,82 +25,87 @@ public class VendingMachine {
 				new Beverage("프리미엄 커피", 700, 3),
 				new Beverage("탄산", 750, 3) 
 				};
-		DailySales = new int[13][32];
+		
 		DailySalesByDrink = new int[13][32][5];
-		MonthlySale = new int[13];
-		MonthlySalesByDrink = new int[5][13];
 		BeverageStuck=new int[] {3,3,3,3,3};
-		
 		fileObject.createFile(this);
-		//fileObject.saveToFile(this);/// 뭐 이런 코드를;;;쓰냐
-		
-
 		today = new GregorianCalendar(Locale.KOREA);
 	}
 	
-	
-	// 음료의 총개수를 반환해주는 함수
-	public int getTotalBeverage_count() {
-		int sum = 0;
-		for (int i = 0; i < Beverage_list.length; i++) {
-			sum += Beverage_list[i].getCount();
-		}
-		return sum;
+	// getter
+	public Coin getVending_coin() {
+		return vending_coin;
 	}
 
-	
+	public int[][][] getDailySalesByDrink() {
+		return DailySalesByDrink;
+	}
 	
 	public int[] getBeverageStuck() {
 		return BeverageStuck;
-	}
-
-	public void setBeverageStuck(int[] beverageStuck) {
-		BeverageStuck = beverageStuck;
 	}
 
 	public Beverage[] getBeverage_list() {
 		return Beverage_list;
 	}
 
-	public void setBeverage_list(Beverage[] Beverage_list) {
-		this.Beverage_list = Beverage_list;
-	}
-
 	public Coin getCoin() {
 		return vending_coin;
 	}
 
+	public String getPassword() {
+		return password;
+	}
+	
+	
+	// setter
+	public void setDailySalesByDrink(int[][][] dailySalesByDrink) {
+		DailySalesByDrink = dailySalesByDrink;
+	}  
+
+	public void setBeverageStuck(int[] beverageStuck) {
+		BeverageStuck = beverageStuck;
+	}
+	
+	public void setBeverage_list(Beverage[] Beverage_list) {
+		this.Beverage_list = Beverage_list;
+	}
+	
 	public void setCoin(Coin coin) {
 		this.vending_coin = coin;
 	}
 	
-	
-	
-
-	
-	public String getPassword() {
-		return password;
-	}
-
 	public void setPassword(String password) {
 		this.password = password;
 	}
 
-	//음료를 구매햇을 때 발생할 함수
 	/*
-	 * private int[][] DailySales;
-	 * private int[] MonthlySale;
-	 * private int[][][] DailySalesByDrink;
-	 * private int[][] MonthlySalesByDrink;
-	 * private int[] BeverageStuck;
+	 * 분류      : 함수
+	 * 반환형    : void
+	 * 매게 변수 : 음료의 인덱스
+	 * 기능      : 음료수를 구매할 때 재고와 판매량을 수정해주는 함수이다
 	 * */
 	public void SaleBeverage(int beverage_number) {
 		DailySalesByDrink[today.get(today.MONTH)][today.get(today.DAY_OF_MONTH)-1][beverage_number]++;
 		BeverageStuck[beverage_number]--;
 		
 	}
-	
+	/*
+	 * 분류      : 함수
+	 * 반환형    : int
+	 * 매게 변수 : month
+	 * 기능      : 각 월의 판매 금액을 반환한다
+	 * */
+	public int getSalesMoneyByMonth(int month) {
+		int sum=0;
+		for(int i=0;i<32;i++) {
+			for(int j=0;j<5;j++) {
+				sum+=DailySalesByDrink[month][i][j]*Beverage_list[j].getPrice();
+			}
+		}
+		
+		return sum;
+	}
 
-	
 	 
 }
