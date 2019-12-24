@@ -7,19 +7,20 @@
 
 * useCase
 
-![image](https://github.com/1571min/VendingMachine-version2-/tree/master/image/usecase.png)
+<img src="image/usecase.png">
+
 
 * model
 
-![image](https://github.com/1571min/VendingMachine-version2-/tree/master/image/model.png)
+<img src="image/model.png">
 
 * flow chart
 
-![image](https://github.com/1571min/VendingMachine-version2-/tree/master/image/flowchart.png)
+<img src="image/flowchart.png">
 
 * gui
 
-![image](https://github.com/1571min/VendingMachine-version2-/tree/master/image/gui.png)
+<img src="image/gui.png">
 
 
 ## 사용자 기능
@@ -32,7 +33,7 @@
 
 
 
-![image](https://github.com/1571min/VendingMachine-version2-/tree/master/image/machinedisplay.png)
+<img src="image/machinedisplay.png">
 
 ## 관리 기능
 * 비밀번호 (특수문자 및 숫자 8자리 이상)
@@ -41,10 +42,10 @@
 * 파일 읽기 쓰기형식으로 데이터 저장
 
 
-![image](https://github.com/1571min/VendingMachine-version2-/tree/master/image/admin.png)
+<img src="image/admin.png">
 
-![image](https://github.com/1571min/VendingMachine-version2-/tree/master/image/admin4.png)
+<img src="image/admin4.png">
 
-![image](https://github.com/1571min/VendingMachine-version2-/tree/master/image/admin2.png)
+<img src="image/admin2.png">
 
-![image](https://github.com/1571min/VendingMachine-version2-/tree/master/image/admin3.png)
+<img src="image/admin3.png">
