@@ -7,19 +7,19 @@
 
 * useCase
 
-![image](https://github.com/1571min/VendingMachine-version2-/image/usecase.png)
+![image](https://github.com/1571min/VendingMachine-version2-/tree/master/image/usecase.png)
 
 * model
 
-![image](https://github.com/1571min/VendingMachine-version2-/image/model.png)
+![image](https://github.com/1571min/VendingMachine-version2-/tree/master/image/model.png)
 
 * flow chart
 
-![image](https://github.com/1571min/VendingMachine-version2-/image/flowchart.png)
+![image](https://github.com/1571min/VendingMachine-version2-/tree/master/image/flowchart.png)
 
 * gui
 
-![image](https://github.com/1571min/VendingMachine-version2-/image/gui.png)
+![image](https://github.com/1571min/VendingMachine-version2-/tree/master/image/gui.png)
 
 
 ## 사용자 기능
@@ -32,7 +32,7 @@
 
 
 
-![image](https://github.com/1571min/VendingMachine-version2-/image/machinedisplay.png)
+![image](https://github.com/1571min/VendingMachine-version2-/tree/master/image/machinedisplay.png)
 
 ## 관리 기능
 * 비밀번호 (특수문자 및 숫자 8자리 이상)
@@ -41,10 +41,10 @@
 * 파일 읽기 쓰기형식으로 데이터 저장
 
 
-![image](https://github.com/1571min/VendingMachine-version2-/image/admin.png)
+![image](https://github.com/1571min/VendingMachine-version2-/tree/master/image/admin.png)
 
-![image](https://github.com/1571min/VendingMachine-version2-/image/admin4.png)
+![image](https://github.com/1571min/VendingMachine-version2-/tree/master/image/admin4.png)
 
-![image](https://github.com/1571min/VendingMachine-version2-/image/admin2.png)
+![image](https://github.com/1571min/VendingMachine-version2-/tree/master/image/admin2.png)
 
-![image](https://github.com/1571min/VendingMachine-version2-/image/admin3.png)
+![image](https://github.com/1571min/VendingMachine-version2-/tree/master/image/admin3.png)
